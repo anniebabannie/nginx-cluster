@@ -1,38 +1,25 @@
-# fly.toml file generated for nginx-cluster-example on 2020-12-23T11:37:25-06:00
+# fly.toml app configuration file generated for nginx-cluster-next on 2024-05-16T15:03:29-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "nginx-cluster-example"
+app = 'nginx-cluster-next'
+primary_region = 'sea'
 
 [experimental]
-private_network=true
 
-[mount]
-source = "nginx_data"
-destination = "/data"
+[build]
 
-[[services]]
+[[mounts]]
+  source = 'nginx_data'
+  destination = '/data'
+
+[http_service]
   internal_port = 8080
-  protocol = "tcp"
-  script_checks = []
+  force_https = true
+  min_machines_running = 1
 
-  [services.concurrency]
-    type = "requests"
-    hard_limit = 100
-    soft_limit = 30
-
-  [[services.ports]]
-    handlers = ["http"]
-    port = "80"
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = "443"
-
-  [[services.http_checks]]
-    interval = 3000
-    method = "get"
-    path = "/healthz"
-    protocol = "http"
-    timeout = 1000
-    restart_limit = 0
-    [services.http_checks.headers]
-      Host = "health.check"
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
